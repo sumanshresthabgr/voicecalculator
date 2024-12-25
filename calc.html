@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="cal.css">
+        </head>
+<body>
+<form class="whole" name="cal">
+    
+    
+        <div class="ww">
+     <p class="t ">Tap to speak</p>
+     </div>
+ </div>
+ <input id="output" class="output" type="text" name="txt" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+         <span class="numb" onClick="document.cal.txt.value+='('" >(</span>
+        <span class="numb" onclick="document.cal.txt.value+=')'" >)</span>
+        <!-- square root-->
+        <span class="numb" onclick="document.cal.txt.value=Math.sqrt(document.cal.txt.value)" >&#8730;</span> 
+           <!--cuberoot-->
+        <span class="numb" onclick="document.cal.txt.value=Math.cbrt(document.cal.txt.value)">&#x221B;</span>
+           <!-- whole square-->
+        <span class="numb" onclick="document.cal.txt.value=Math.pow(document.cal.txt.value,2)">x<sup>2</sup></span>
+           <!-- clear button-->
+        <span class="numbbb" onclick="document.cal.txt.value=' '">CE</span>
+
+        <span class="numb" onclick="document.cal.txt.value=Math.sin(document.cal.txt.value*Math.PI/180);">sin</span>
+        <span class="numb" onclick="document.cal.txt.value+='9'">9</span>
+        <span class="numb" onclick="document.cal.txt.value+='8'">8</span>
+        <span class="numb" onclick="document.cal.txt.value+='7'">7</span>
+        <span class="numb" onclick="document.cal.txt.value=Math.pow(document.cal.txt.value,3)">x<sup>3</sup></span>
+        <span class="numb" onclick="document.cal.txt.value+='+'" >+</span> 
+
+        <span class="numb" onclick="document.cal.txt.value=Math.cos(document.cal.txt.value*Math.PI/180)" >cos</span>
+        <span class="numb" onclick="document.cal.txt.value+='6'">6</span>
+        <span class="numb" onclick="document.cal.txt.value+='5'">5</span>
+        <span class="numb" onclick="document.cal.txt.value+='4'">4</span>
+        <span class="numb" onclick="document.cal.txt.value+='/'">/</span>
+        <span class="numb" onclick="document.cal.txt.value+='*'">*</span>
+
+        <span class="numb" onclick="document.cal.txt.value=Math.tan(document.cal.txt.value*Math.PI/180)">tan</span>
+        <span class="numb" onclick="document.cal.txt.value+='3'">3</span>
+        <span class="numb" onclick="document.cal.txt.value+='2'">2</span>
+        <span class="numb" onclick="document.cal.txt.value+='1'">1</span>
+        <span class="numb" onclick="document.cal.txt.value+='%'">%</span>
+        <span class="numb" onclick="document.cal.txt.value+='-'" >-</span>
+
+        <span class="numb" onclick="document.cal.txt.value=Math.PI" >&#x3C0;</span>
+        <span class="numb" onclick="document.cal.txt.value+='0'" >0</span>
+        <span class="numb" onclick="document.cal.txt.value+='.'" >.</span> 
+        <span class="numb" onclick="document.cal.txt.value+='00'" >00</span>
+        <span class="eq" onclick="document.cal.txt.value=eval(cal.txt.value)">=</span>
+           <script>
+           
+    const circlebut=document.querySelector(".t");
+ 
+         circlebut.addEventListener("click", runSpeechRecognition);
+            function runSpeechRecognition()
+        {
+            //weeb speech API
+            const SpeechRecognition = window.SpeechRecognition || webkitSpeechRecognition;
+            const recognition = new SpeechRecognition();
+            
+            recognition.lang='en-US';
+
+        
+            recognition.start();
+           
+
+            recognition.onstart=function() 
+            {
+               circlebut.innerHTML="<p>listening...</p>";
+             circlebut.classList.add("listening");
+                };
+    
+            recognition.onspeechend=function()
+            {
+              circlebut.innerHTML ="<p>Tap to speak</p>";
+              circlebut.classList.remove("listening");
+                recognition.stop();
+            };
+            recognition.onresult=function(event)
+            {
+                var  input =event.results[0][0].transcript;
+                 console.log(input);
+                    document.getElementById("output").value=input;
+                    setTimeout(function()
+               {
+                   evaluate(input);
+               },1500) 
+
+            };
+            function evaluate(input)
+            {
+                try{
+                    var result=eval(input);
+                   document.getElementById("output").value=result;
+                   //speech synthesis utterance 
+                   var msg = new SpeechSynthesisUtterance();
+                   msg.text = (input + "is equals to "+ result);
+                   window.speechSynthesis.speak(msg);
+                }
+                catch(error){
+                    console.log(error);
+                    document.getElementById("output").value="";
+                    alert('MESSAGE TO USER :PRESS OK FOR VOICE MESSAGE!-:-:-:-:-:-! ');
+                    var error= new SpeechSynthesisUtterance();
+                    
+                   error.text = ("The expression" +input+" is incorrect   'Perhaps it is not a mathmatical expression ' '   please try again and give clear voice input'")
+                   window.speechSynthesis.speak(error)
+                   
+                }
+            }
+
+           };
+        
+
+            </script>
+
+ </form>
+</body>
+ </html>
